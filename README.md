@@ -4,7 +4,7 @@
 A beautiful anime-themed authentication portal with login and signup forms featuring sakura blossom animations and vibrant UI elements.
 
 ![Preview](preview.png)
-![Preview2](preview1.png)
+![Preview2](preview2.png)
 <!-- Add a screenshot later -->
 
 ## Features ✨
