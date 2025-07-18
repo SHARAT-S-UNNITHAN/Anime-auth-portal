@@ -58,16 +58,7 @@ SVG icons from Bootstrap Icons
 
 Contributing 🤝
 Contributions are welcome! Please open an issue or pull request for any improvements.
-
-### License Recommendation:
-Use the **MIT License** - it's perfect for your needs because:
-1. It allows anyone to use your code
-2. Requires them to give you credit
-3. Permits modification and redistribution
-4. Is widely recognized and accepted
-
-Create a `LICENSE` file with this content:
-
+**MIT License**
 ```text
 MIT License
 
