@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Auth Portal</title>
+    <style>
+        :root {
+            --primary: #ff2d54; /* Anime pink */
+            --primary-light: #ff7aa2;
+            --secondary: #6a4c93; /* Purple */
+            --accent: #ff9e3d; /* Orange */
+            --dark: #2e2a3a; /* Dark purple */
+            --light: #fff5f7; /* Light pink */
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #ef233c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'M PLUS Rounded 1c', 'Arial Rounded MT Bold', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffcce6, #ffb3d9);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--dark);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Sakura Blossoms */
+        .sakura {
+            position: absolute;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff7aa2"><path d="M12 2C13.1 2 14 2.9 14 4S13.1 6 12 6 10 5.1 10 4 10.9 2 12 2m3.5 6.5c.3-.3.8-.3 1.1 0 .3.3.3.8 0 1.1-.3.3-.8.3-1.1 0-.3-.3-.3-.8 0-1.1M12 11c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5m0-2c-3.9 0-7 3.1-7 7s3.1 7 7 7 7-3.1 7-7-3.1-7-7-7m4.5-3.5c.3-.3.8-.3 1.1 0 .3.3.3.8 0 1.1-.3.3-.8.3-1.1 0-.3-.3-.3-.8 0-1.1M7 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m14-4c0-.5-.5-1-1-1-.3 0-.6.1-.8.4-.4.4-.4 1.2 0 1.6.2.2.5.4.8.4.6 0 1-.4 1-1z"/></svg>');
+            background-size: contain;
+            width: 30px;
+            height: 30px;
+            animation: falling linear infinite;
+            z-index: 0;
+        }
+        
+        @keyframes falling {
+            0% {
+                transform: translate(0, -10vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(calc(var(--random-x) * 10vw), 100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .auth-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+            overflow: hidden;
+            display: flex;
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 1;
+            border: 2px solid var(--primary);
+        }
+        
+        .auth-illustration {
+            flex: 1;
+            background: linear-gradient(45deg, var(--primary-light), var(--primary));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .auth-illustration::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%23ffffff22"><circle cx="25" cy="25" r="3"/><circle cx="75" cy="25" r="3"/><circle cx="50" cy="50" r="3"/><circle cx="25" cy="75" r="3"/><circle cx="75" cy="75" r="3"/></svg>');
+            background-size: 100px 100px;
+            animation: bgMove 20s linear infinite;
+            z-index: 0;
+        }
+        
+        @keyframes bgMove {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .auth-illustration h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .auth-illustration p {
+            text-align: center;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+            font-weight: 500;
+        }
+        
+        .illustration {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.2));
+            position: relative;
+            z-index: 1;
+            animation: float 3s ease-in-out infinite;
+            border-radius: 10px;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .auth-form-container {
+            flex: 1;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+            background-color: var(--light);
+        }
+        
+        .auth-form {
+            width: 100%;
+            transition: all 0.5s ease;
+        }
+        
+        .form-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .form-header h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .form-header h1::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 3px;
+        }
+        
+        .form-header p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ffb3d9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 45, 84, 0.2);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(255, 45, 84, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0.13) 0%,
+                rgba(255, 255, 255, 0.13) 77%,
+                rgba(255, 255, 255, 0.5) 92%,
+                rgba(255, 255, 255, 0.0) 100%
+            );
+            transform: rotate(30deg);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(255, 45, 84, 0.4);
+        }
+        
+        .btn:hover::after {
+            animation: shine 1.5s ease;
+        }
+        
+        @keyframes shine {
+            100% {
+                left: 120%;
+            }
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .toggle-form {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        
+        .toggle-form a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .toggle-form a:hover {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+        
+        .toggle-form a::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: width 0.3s ease;
+        }
+        
+        .toggle-form a:hover::after {
+            width: 100%;
+        }
+        
+        .social-auth {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .social-auth p {
+            color: #666;
+            margin-bottom: 1rem;
+            position: relative;
+            font-size: 0.9rem;
+        }
+        
+        .social-auth p::before,
+        .social-auth p::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #ffb3d9);
+        }
+        
+        .social-auth p::before {
+            left: 0;
+        }
+        
+        .social-auth p::after {
+            right: 0;
+            background: linear-gradient(90deg, #ffb3d9, transparent);
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .social-icon:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 5px 15px rgba(255, 45, 84, 0.3);
+        }
+        
+        /* Form validation styles */
+        .error-message {
+            color: var(--danger);
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+        
+        .form-group.error .error-message {
+            display: block;
+        }
+        
+        .form-group.error .form-control {
+            border-color: var(--danger);
+            background-color: rgba(239, 35, 60, 0.05);
+        }
+        
+        .form-group.success .form-control {
+            border-color: var(--success);
+            background-color: rgba(76, 201, 240, 0.05);
+        }
+        
+        /* Animation classes */
+        .slide-left {
+            transform: translateX(-100%);
+            opacity: 0;
+            position: absolute;
+        }
+        
+        .slide-right {
+            transform: translateX(100%);
+            opacity: 0;
+            position: absolute;
+        }
+        
+        .active-form {
+            transform: translateX(0);
+            opacity: 1;
+            position: relative;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .auth-container {
+                flex-direction: column;
+            }
+            
+            .auth-illustration {
+                padding: 1.5rem;
+            }
+            
+            .auth-form-container {
+                padding: 2rem;
+            }
+        }
+        
+        /* Image frame styling */
+        .image-frame {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .image-frame::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff7aa2, #ff2d54, #ff9e3d);
+            z-index: -1;
+            animation: rotate 8s linear infinite;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .anime-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .image-frame:hover .anime-image {
+            transform: scale(1.05);
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Sakura Blossoms -->
+    <div id="sakura-container"></div>
+    
+    <div class="auth-container">
+        <div class="auth-illustration">
+            <h2>おかえりなさい!</h2>
+            <p>Welcome back! Please login to continue your anime journey.</p>
+            
+            <!-- Image frame with anime illustration -->
+            <div class="image-frame">
+                <img src="https://i.pinimg.com/736x/da/ad/a0/daada060e6cb8b59bca1c3d566901238.jpg" alt="Anime Character" class="anime-image">
+            </div>
+        </div>
+        
+        <div class="auth-form-container">
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form active-form">
+                <div class="form-header">
+                    <h1>ログイン</h1>
+                    <p>Welcome back! Please enter your credentials.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" required>
+                    <span class="error-message">Please enter a valid email address</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required>
+                    <span class="error-message">Password must be at least 8 characters</span>
+                </div>
+                
+                <div class="form-group">
+                    <button type="submit" class="btn">Login</button>
+                </div>
+                
+                <div class="toggle-form">
+                    <p>Don't have an account? <a id="showSignup">Sign up</a></p>
+                </div>
+                
+                <div class="social-auth">
+                    <p>Or login with</p>
+                    <div class="social-icons">
+                        <div class="social-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                            </svg>
+                        </div>
+                        <div class="social-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z"/>
+                            </svg>
+                        </div>
+                        <div class="social-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
+            <!-- Signup Form -->
+            <form id="signupForm" class="auth-form slide-right">
+                <div class="form-header">
+                    <h1>新規登録</h1>
+                    <p>Join our anime community today!</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="signupName">Username</label>
+                    <input type="text" id="signupName" class="form-control" placeholder="Enter your username" required>
+                    <span class="error-message">Please enter your username</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="signupEmail">Email Address</label>
+                    <input type="email" id="signupEmail" class="form-control" placeholder="Enter your email" required>
+                    <span class="error-message">Please enter a valid email address</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" class="form-control" placeholder="Create a password" required>
+                    <span class="error-message">Password must be at least 8 characters</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="signupConfirmPassword">Confirm Password</label>
+                    <input type="password" id="signupConfirmPassword" class="form-control" placeholder="Confirm your password" required>
+                    <span class="error-message">Passwords don't match</span>
+                </div>
+                
+                <div class="form-group">
+                    <button type="submit" class="btn">Sign Up</button>
+                </div>
+                
+                <div class="toggle-form">
+                    <p>Already have an account? <a id="showLogin">Login</a></p>
+                </div>
+                
+                <div class="social-auth">
+                    <p>Or sign up with</p>
+                    <div class="social-icons">
+                        <div class="social-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                            </svg>
+                        </div>
+                        <div class="social-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z"/>
+                            </svg>
+                        </div>
+                        <div class="social-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create sakura blossoms
+            const sakuraContainer = document.getElementById('sakura-container');
+            for (let i = 0; i < 15; i++) {
+                const sakura = document.createElement('div');
+                sakura.classList.add('sakura');
+                sakura.style.left = Math.random() * 100 + 'vw';
+                sakura.style.top = -30 + 'px';
+                sakura.style.animationDuration = Math.random() * 5 + 5 + 's';
+                sakura.style.animationDelay = Math.random() * 5 + 's';
+                sakura.style.opacity = Math.random() * 0.5 +'s';
+                sakura.style.setProperty('--random-x', Math.random() * 2 - 1); // Random horizontal movement
+                sakuraContainer.appendChild(sakura);
+            }
+
+            // Form toggle functionality
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const showSignup = document.getElementById('showSignup');
+            const showLogin = document.getElementById('showLogin');
+            
+            showSignup.addEventListener('click', function(e) {
+                e.preventDefault();
+                loginForm.classList.remove('active-form');
+                loginForm.classList.add('slide-left');
+                signupForm.classList.remove('slide-right');
+                signupForm.classList.add('active-form');
+                
+                // Update illustration content
+                document.querySelector('.auth-illustration h2').textContent = 'ようこそ!';
+                document.querySelector('.auth-illustration p').textContent = 'Join our anime community today!';
+            });
+            
+            showLogin.addEventListener('click', function(e) {
+                e.preventDefault();
+                signupForm.classList.remove('active-form');
+                signupForm.classList.add('slide-right');
+                loginForm.classList.remove('slide-left');
+                loginForm.classList.add('active-form');
+                
+                // Update illustration content
+                document.querySelector('.auth-illustration h2').textContent = 'おかえりなさい!';
+                document.querySelector('.auth-illustration p').textContent = 'Welcome back! Please login to continue your anime journey.';
+            });
+
+            // Form validation
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(String(email).toLowerCase());
+            }
+
+            // Login form validation
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                let isValid = true;
+                
+                // Validate email
+                const email = document.getElementById('loginEmail');
+                const emailError = email.nextElementSibling;
+                if (!validateEmail(email.value)) {
+                    email.parentElement.classList.add('error');
+                    isValid = false;
+                } else {
+                    email.parentElement.classList.remove('error');
+                }
+                
+                // Validate password
+                const password = document.getElementById('loginPassword');
+                const passwordError = password.nextElementSibling;
+                if (password.value.length < 8) {
+                    password.parentElement.classList.add('error');
+                    isValid = false;
+                } else {
+                    password.parentElement.classList.remove('error');
+                }
+                
+                if (isValid) {
+                    // Simulate successful login
+                    email.parentElement.classList.add('success');
+                    password.parentElement.classList.add('success');
+                    
+                    // Show welcome message
+                    alert('Login successful! Welcome back, anime fan!');
+                    
+                    // Reset form
+                    setTimeout(() => {
+                        loginForm.reset();
+                        email.parentElement.classList.remove('success');
+                        password.parentElement.classList.remove('success');
+                    }, 2000);
+                }
+            });
+
+            // Signup form validation
+            signupForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                let isValid = true;
+                
+                // Validate username
+                const username = document.getElementById('signupName');
+                if (username.value.trim() === '') {
+                    username.parentElement.classList.add('error');
+                    isValid = false;
+                } else {
+                    username.parentElement.classList.remove('error');
+                }
+                
+                // Validate email
+                const email = document.getElementById('signupEmail');
+                if (!validateEmail(email.value)) {
+                    email.parentElement.classList.add('error');
+                    isValid = false;
+                } else {
+                    email.parentElement.classList.remove('error');
+                }
+                
+                // Validate password
+                const password = document.getElementById('signupPassword');
+                if (password.value.length < 8) {
+                    password.parentElement.classList.add('error');
+                    isValid = false;
+                } else {
+                    password.parentElement.classList.remove('error');
+                }
+                
+                // Validate confirm password
+                const confirmPassword = document.getElementById('signupConfirmPassword');
+                if (confirmPassword.value !== password.value) {
+                    confirmPassword.parentElement.classList.add('error');
+                    isValid = false;
+                } else {
+                    confirmPassword.parentElement.classList.remove('error');
+                }
+                
+                if (isValid) {
+                    // Simulate successful signup
+                    username.parentElement.classList.add('success');
+                    email.parentElement.classList.add('success');
+                    password.parentElement.classList.add('success');
+                    confirmPassword.parentElement.classList.add('success');
+                    
+                    // Show welcome message
+                    alert('Account created successfully! Welcome to our anime community!');
+                    
+                    // Reset form and switch to login
+                    setTimeout(() => {
+                        signupForm.reset();
+                        username.parentElement.classList.remove('success');
+                        email.parentElement.classList.remove('success');
+                        password.parentElement.classList.remove('success');
+                        confirmPassword.parentElement.classList.remove('success');
+                        
+                        // Switch to login form
+                        signupForm.classList.remove('active-form');
+                        signupForm.classList.add('slide-right');
+                        loginForm.classList.remove('slide-left');
+                        loginForm.classList.add('active-form');
+                        
+                        // Update illustration content
+                        document.querySelector('.auth-illustration h2').textContent = 'おかえりなさい!';
+                        document.querySelector('.auth-illustration p').textContent = 'Welcome back! Please login to continue your anime journey.';
+                    }, 2000);
+                }
+            });
+
+            // Add focus effects
+            const inputs = document.querySelectorAll('.form-control');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('focus');
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('focus');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
