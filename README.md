@@ -25,7 +25,7 @@ A beautiful anime-themed authentication portal with login and signup forms featu
 ## Installation & Usage 🚀
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/anime-auth-portal.git
+   git clone https://github.com/SHARAT-S-UNNITHAN/Anime-auth-portal.git
 
    Open index.html in your browser
 
@@ -42,7 +42,15 @@ License 📜
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 Credits 🙏
-Developer: Your Name
+ **Developer**: Sharat S Unnithan
+ **📧 Email**: [sharatsunnithan3@gmail.com](mailto:sharatsunnithan3@gmail.com)
+ **🔗 Social Media**:
+
+  * [Instagram](https://www.instagram.com/gamer_sharat_/)
+  * [LinkedIn](https://www.linkedin.com/in/sharat-s-unnithan-b363852a7)
+  * [YouTube](https://www.youtube.com/@gamersharat)
+  * [GitHub](https://github.com/SHARAT-S-UNNITHAN)
+
 
 Inspired by anime UI designs and Japanese aesthetic
 
